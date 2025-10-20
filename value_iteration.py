@@ -3,9 +3,8 @@ import matplotlib.pyplot as plt
 import matplotlib.animation as animation
 from matplotlib.colors import LinearSegmentedColormap
 
-# 设置中文显示
 plt.rcParams["font.family"] = ["SimHei", "WenQuanYi Micro Hei", "Heiti TC"]
-plt.rcParams["axes.unicode_minus"] = False  # 正确显示负号
+plt.rcParams["axes.unicode_minus"] = False  
 
 class GridWorld:
     """网格世界环境"""
@@ -209,20 +208,16 @@ class GridWorld:
         ax.text(self.start[1], self.start[0], '起点', ha='center', va='center', color='white', fontsize=12, fontweight='bold')
         ax.text(self.goal[1], self.goal[0], '终点', ha='center', va='center', color='yellow', fontsize=12, fontweight='bold')
         
-        # 添加网格线
         ax.set_xticks(np.arange(-0.5, self.size, 1), minor=True)
         ax.set_yticks(np.arange(-0.5, self.size, 1), minor=True)
         ax.grid(which='minor', color='gray', linestyle='-', linewidth=1)
         
-        # 隐藏刻度
         ax.set_xticks([])
         ax.set_yticks([])
         
-        # 添加颜色条
         cbar = fig.colorbar(im)
         cbar.set_label('状态价值')
         
-        # 添加标题
         title = ax.set_title(f'价值迭代 - 迭代次数: 0')
         
         # 更新函数
@@ -231,7 +226,6 @@ class GridWorld:
             title.set_text(f'价值迭代 - 迭代次数: {frame}')
             return im, title
         
-        # 创建动画
         ani = animation.FuncAnimation(
             fig, update, frames=len(self.iteration_history),
             interval=500, blit=True
@@ -269,38 +263,31 @@ class GridWorld:
                 action_idx = policy[state]
                 dx, dy = self.actions[action_idx]
                 
-                # 绘制箭头
                 ax.arrow(
                     y, x, dy * arrow_length, dx * arrow_length,
                     head_width=0.1, head_length=0.1, fc='black', ec='black'
                 )
         
-        # 绘制路径
         if path:
             path_x = [p[1] for p in path]
             path_y = [p[0] for p in path]
             ax.plot(path_x, path_y, 'g-', linewidth=2, marker='o', markersize=5, markerfacecolor='green')
         
-        # 添加网格线
         ax.set_xticks(np.arange(-0.5, self.size, 1), minor=True)
         ax.set_yticks(np.arange(-0.5, self.size, 1), minor=True)
         ax.grid(which='minor', color='gray', linestyle='-', linewidth=1)
         
-        # 隐藏刻度
         ax.set_xticks([])
         ax.set_yticks([])
         
-        # 添加颜色条
         cbar = fig.colorbar(im)
         cbar.set_label('状态价值')
         
-        # 添加标题
         ax.set_title('最优策略与路径（包含距离奖励机制）')
         
         plt.tight_layout()
         return fig
 
-# 主函数
 def main():
     # 创建10x10的网格世界，起点(0,0)，终点(9,9)
     # 可以自定义障碍物，例如：obstacles={(2,2), (2,3), (3,2), (4,4), (5,5), (6,6), (7,7)}

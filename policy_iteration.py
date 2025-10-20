@@ -3,12 +3,10 @@ import matplotlib.pyplot as plt
 import matplotlib.animation as animation
 from matplotlib.colors import LinearSegmentedColormap
 
-# 设置中文显示
 plt.rcParams["font.family"] = ["SimHei", "WenQuanYi Micro Hei", "Heiti TC"]
-plt.rcParams["axes.unicode_minus"] = False  # 正确显示负号
+plt.rcParams["axes.unicode_minus"] = False  
 
 class DynamicGridWorld:
-    """带动态障碍物的网格世界环境（策略迭代版本）"""
     def __init__(self, size=10, start=(0, 0), goal=(9, 9), 
                  num_dynamic_obstacles=3, obstacle_speed=1,
                  obstacle_cost=2, distance_to_obstacle_threshold=1):
@@ -16,7 +14,6 @@ class DynamicGridWorld:
         self.start = start  # 起点
         self.goal = goal    # 终点
         
-        # 先定义动作集合（关键修正：移到障碍物初始化之前）
         self.actions = [(-1, 0), (0, 1), (1, 0), (0, -1)]  # 上、右、下、左
         self.action_names = ['上', '右', '下', '左']
         
@@ -26,7 +23,6 @@ class DynamicGridWorld:
         self.obstacles = set()  # 当前障碍物位置集合
         self.obstacle_directions = []  # 每个障碍物的移动方向
         
-        # 初始化动态障碍物（此时self.actions已定义）
         self._init_dynamic_obstacles()
         
         # 代价层参数
@@ -297,20 +293,17 @@ class DynamicGridWorld:
                     cost_layer_patches.append(p)
                     ax.add_patch(p)
         
-        # 起点和终点标记
         ax.text(self.start[1], self.start[0], '起点', ha='center', va='center', 
                 color='white', fontsize=12, fontweight='bold')
         ax.text(self.goal[1], self.goal[0], '终点', ha='center', va='center', 
                 color='yellow', fontsize=12, fontweight='bold')
         
-        # 网格设置
         ax.set_xticks(np.arange(-0.5, self.size, 1), minor=True)
         ax.set_yticks(np.arange(-0.5, self.size, 1), minor=True)
         ax.grid(which='minor', color='gray', linestyle='-', linewidth=1)
         ax.set_xticks([])
         ax.set_yticks([])
         
-        # 颜色条和标题
         cbar = fig.colorbar(im)
         cbar.set_label('状态价值')
         title = ax.set_title(f'动态障碍物环境 - 时间步: 0')
@@ -344,17 +337,14 @@ class DynamicGridWorld:
                         ax.add_patch(p)
             cost_layer_patches[:] = new_cost_patches  # 更新引用
             
-            # 更新路径
             if new_path:
                 path_x = [p[1] for p in new_path]
                 path_y = [p[0] for p in new_path]
                 path_line.set_data(path_x, path_y)
             
-            # 更新标题
             title.set_text(f'动态障碍物环境 - 时间步: {frame+1}')
             return [im, path_line] + obstacle_patches + cost_layer_patches
         
-        # 创建动画
         ani = animation.FuncAnimation(
             fig, update, frames=total_steps,
             interval=50, blit=True
@@ -363,9 +353,7 @@ class DynamicGridWorld:
         plt.tight_layout()
         return ani
 
-# 主函数
 def main():
-    # 创建带动态障碍物的网格世界
     grid = DynamicGridWorld(
         size=20,
         start=(0, 0),
