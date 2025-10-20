@@ -4,9 +4,9 @@ import matplotlib.animation as animation
 from matplotlib.colors import LinearSegmentedColormap
 from collections import defaultdict
 
-# 设置中文显示
+
 plt.rcParams["font.family"] = ["SimHei", "WenQuanYi Micro Hei", "Heiti TC"]
-plt.rcParams["axes.unicode_minus"] = False  # 正确显示负号
+plt.rcParams["axes.unicode_minus"] = False  
 
 class MCEpsilonGreedyMaze:
     """基于ε-greedy蒙特卡洛方法的网格世界路径搜索（静态障碍物）"""
@@ -32,21 +32,17 @@ class MCEpsilonGreedyMaze:
         self.distance_threshold = distance_threshold
         self.cost_layer = self._compute_cost_layer()
         
-        # MC核心参数（使用ε-greedy）
         self.Q = defaultdict(float)  # 状态-动作价值函数 Q(s,a)
         self.returns = defaultdict(list)  # 存储每个(s,a)的回报
         self.gamma = 0.9  # 折扣因子
         self.distance_reward_factor = 10  # 距离奖励因子
         self.epsilon = epsilon  # ε-greedy参数
         
-        # 环境状态
         self.episodes = 0  # 记录已完成的轨迹数
         self.q_history = []  # 记录Q值变化（背景核心）
         
-        # 初始化学习历史
         self._record_q_values()  # 初始记录一次Q值
 
-    # ---------------------- 基础环境逻辑 ----------------------
     def is_terminal(self, state):
         return state == self.goal
     
@@ -111,7 +107,6 @@ class MCEpsilonGreedyMaze:
         
         return (new_x, new_y), reward
 
-    # ---------------------- MC核心逻辑（ε-greedy）----------------------
     def choose_epsilon_greedy_action(self, state):
         """使用ε-greedy策略选择动作"""
         if np.random.rand() < self.epsilon:
@@ -168,7 +163,6 @@ class MCEpsilonGreedyMaze:
             if self.episodes % 10 == 0:
                 self._record_q_values()
 
-    # ---------------------- 记录背景状态 ----------------------
     def _record_q_values(self):
         v = np.zeros((self.size, self.size))
         for x in range(self.size):
@@ -182,7 +176,6 @@ class MCEpsilonGreedyMaze:
                     v[x, y] = max([self.Q[(s, a)] for a in range(self.num_actions)])
         self.q_history.append(v)
 
-    # ---------------------- 实时生成最优路径 ----------------------
     def get_latest_optimal_path(self):
         path = [self.start_for_path]
         current = self.start_for_path
@@ -214,7 +207,6 @@ class MCEpsilonGreedyMaze:
         path = [p for p in path if not self.is_obstacle(p)]
         return path if len(path) > 1 else [self.start_for_path]
 
-    # ---------------------- 可视化：静态障碍物背景 ----------------------
     def visualize_learning_with_static_obstacles(self, total_episodes=500):
         self.first_visit_mc_control_with_epsilon_greedy(total_episodes)
         
