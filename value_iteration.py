@@ -32,14 +32,14 @@ class GridWorld:
         # 初始化价值函数
         self.values = np.zeros((size, size))
         # 终点价值设为100
-        self.values[goal] = 100
+        self.values[goal] = 1
         
         # 折扣因子
         self.gamma = 0.9
         # 收敛阈值
         self.theta = 0.01
         # 距离奖励因子（控制距离对奖励的影响程度）
-        self.distance_reward_factor = 2
+        self.distance_reward_factor = 0.1
         
         # 存储迭代过程，用于可视化
         self.iteration_history = []
